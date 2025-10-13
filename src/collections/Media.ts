@@ -11,9 +11,35 @@ export const Media: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'caption',
+      type: 'text',
+    },
+    {
+      name: 'mediaType',
+      type: 'select',
+      options: [
+        {
+          label: 'Logo',
+          value: 'logo',
+        },
+        {
+          label: 'Icon',
+          value: 'icon',
+        },
+        {
+          label: 'Background',
+          value: 'background',
+        },
+        {
+          label: 'General',
+          value: 'general',
+        },
+      ],
+      defaultValue: 'general',
+    },
   ],
   upload: {
-    // These are not supported on Workers yet due to lack of sharp
     crop: false,
     focalPoint: false,
   },

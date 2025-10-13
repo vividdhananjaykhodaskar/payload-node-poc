@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    navigation: Navigation;
+    services: Service;
+    magazines: Magazine;
+    'sister-sites': SisterSite;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -77,6 +81,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
+    magazines: MagazinesSelect<false> | MagazinesSelect<true>;
+    'sister-sites': SisterSitesSelect<false> | SisterSitesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -84,8 +92,16 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'hero-section': HeroSection;
+    'contact-info': ContactInfo;
+    'site-settings': SiteSetting;
+  };
+  globalsSelect: {
+    'hero-section': HeroSectionSelect<false> | HeroSectionSelect<true>;
+    'contact-info': ContactInfoSelect<false> | ContactInfoSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+  };
   locale: null;
   user: User & {
     collection: 'users';
@@ -144,6 +160,8 @@ export interface User {
 export interface Media {
   id: number;
   alt: string;
+  caption?: string | null;
+  mediaType?: ('logo' | 'icon' | 'background' | 'general') | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -153,6 +171,81 @@ export interface Media {
   filesize?: number | null;
   width?: number | null;
   height?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  label: string;
+  url: string;
+  /**
+   * Order in which the navigation item appears
+   */
+  order: number;
+  /**
+   * Check if this link goes to an external site
+   */
+  isExternal?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  title: string;
+  icon: number | Media;
+  subtitles: {
+    text: string;
+    id?: string | null;
+  }[];
+  /**
+   * Display order of the service
+   */
+  order: number;
+  /**
+   * Animation delay for the service box
+   */
+  animationDelay?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "magazines".
+ */
+export interface Magazine {
+  id: number;
+  name: string;
+  tagline: string;
+  logo: number | Media;
+  websiteUrl: string;
+  shopUrl: string;
+  order: number;
+  /**
+   * Show/hide this magazine on the website
+   */
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sister-sites".
+ */
+export interface SisterSite {
+  id: number;
+  name: string;
+  description: string;
+  url: string;
+  order: number;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -168,6 +261,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'navigation';
+        value: number | Navigation;
+      } | null)
+    | ({
+        relationTo: 'services';
+        value: number | Service;
+      } | null)
+    | ({
+        relationTo: 'magazines';
+        value: number | Magazine;
+      } | null)
+    | ({
+        relationTo: 'sister-sites';
+        value: number | SisterSite;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -239,6 +348,8 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  caption?: T;
+  mediaType?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -248,6 +359,64 @@ export interface MediaSelect<T extends boolean = true> {
   filesize?: T;
   width?: T;
   height?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  label?: T;
+  url?: T;
+  order?: T;
+  isExternal?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  title?: T;
+  icon?: T;
+  subtitles?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  order?: T;
+  animationDelay?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "magazines_select".
+ */
+export interface MagazinesSelect<T extends boolean = true> {
+  name?: T;
+  tagline?: T;
+  logo?: T;
+  websiteUrl?: T;
+  shopUrl?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sister-sites_select".
+ */
+export interface SisterSitesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  url?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -280,6 +449,130 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero-section".
+ */
+export interface HeroSection {
+  id: number;
+  mainHeading: string;
+  subHeading: string;
+  backgroundImage: number | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-info".
+ */
+export interface ContactInfo {
+  id: number;
+  companyName: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  phones: {
+    tollFree: string;
+    overseas: string;
+  };
+  emails: {
+    customerService: string;
+    subscriptions: string;
+    webmaster: string;
+  };
+  socialMedia?: {
+    facebook?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  siteLogo: number | Media;
+  copyrightText?: string | null;
+  sectionHeadings?: {
+    services?: string | null;
+    magazines?: string | null;
+    contact?: string | null;
+    otherSites?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero-section_select".
+ */
+export interface HeroSectionSelect<T extends boolean = true> {
+  mainHeading?: T;
+  subHeading?: T;
+  backgroundImage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-info_select".
+ */
+export interface ContactInfoSelect<T extends boolean = true> {
+  companyName?: T;
+  address?:
+    | T
+    | {
+        street?: T;
+        city?: T;
+        state?: T;
+        zip?: T;
+      };
+  phones?:
+    | T
+    | {
+        tollFree?: T;
+        overseas?: T;
+      };
+  emails?:
+    | T
+    | {
+        customerService?: T;
+        subscriptions?: T;
+        webmaster?: T;
+      };
+  socialMedia?:
+    | T
+    | {
+        facebook?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteLogo?: T;
+  copyrightText?: T;
+  sectionHeadings?:
+    | T
+    | {
+        services?: T;
+        magazines?: T;
+        contact?: T;
+        otherSites?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
