@@ -43,26 +43,37 @@ export default buildConfig({
     SisterSites,
   ],
   globals: [
-  HeroSection,
-  ContactInfo,
-  SiteSettings,
-],
+    HeroSection,
+    ContactInfo,
+    SiteSettings,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  // database-adapter-config-start
+
+  // ✅ Add this CORS + CSRF configuration
+  cors: [
+    'https://whiteriver-landing-page.web.app', // your Firebase app
+    'http://localhost:3000', // optional, for local testing
+  ],
+  csrf: [
+    'https://whiteriver-landing-page.web.app',
+    'http://localhost:3000',
+  ],
+
+  // database
   db: sqliteD1Adapter({ binding: cloudflare.env.D1 }),
-  // database-adapter-config-end
+
   plugins: [
-    // storage-adapter-placeholder
     r2Storage({
       bucket: cloudflare.env.R2,
       collections: { media: true },
     }),
   ],
 })
+
 
 // Adapted from https://github.com/opennextjs/opennextjs-cloudflare/blob/d00b3a13e42e65aad76fba41774815726422cc39/packages/cloudflare/src/api/cloudflare-context.ts#L328C36-L328C46
 function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
