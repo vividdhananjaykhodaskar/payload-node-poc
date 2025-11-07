@@ -24,5 +24,11 @@ export const HeroSection: GlobalConfig = {
       relationTo: 'media',
       required: true,
     },
+    {
+      name: 'test',
+      type: 'text',
+      required: false,
+      defaultValue: "",
+    },
   ],
 }
